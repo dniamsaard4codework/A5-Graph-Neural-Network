@@ -1,0 +1,29 @@
+[project]
+name = "a5-graph-neural-network"
+version = "0.1.0"
+description = "DL-AIT Assignment 5 - Graph Neural Networks (st126235)"
+readme = "README.md"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "torch>=2.7",
+    "numpy",
+    "pandas",
+    "scipy",
+    "scikit-learn",
+    "matplotlib",
+    "networkx",
+    "tqdm",
+    "jupyter",
+    "ipykernel",
+    "nbconvert",
+    "nbformat",
+]
+
+# RTX 5060 Ti is Blackwell (sm_120) -> requires CUDA 12.8+ wheels (cu128).
+[tool.uv.sources]
+torch = { index = "pytorch-cu128" }
+
+[[tool.uv.index]]
+name = "pytorch-cu128"
+url = "https://download.pytorch.org/whl/cu128"
+explicit = true
