@@ -63,9 +63,9 @@ embedding toward the same vector (**over-smoothing**) until the classifier can n
 
 | Model | Test Accuracy | Avg epoch time |
 |---|---|---|
-| GCN | 23.00% | 1.4 ms |
+| GCN | 23.00% | 1.1 ms |
 | GAT (8 heads) | 26.20% | 41.8 ms |
-| GraphSAGE (k=10) | 18.60% | 394.8 ms |
+| GraphSAGE (k=10) | 21.40% | 394.9 ms |
 
 Training curves for the three GNNs (train solid, validation dashed):
 
@@ -95,7 +95,7 @@ artifact, not a property of the algorithm.)*
 | MLP (no graph) | 14.40% |
 | GCN | 23.00% |
 | GAT | 26.20% |
-| GraphSAGE | 18.60% |
+| GraphSAGE | 21.40% |
 
 Validation curves — every graph-aware model sits clearly above the graph-blind MLP:
 
