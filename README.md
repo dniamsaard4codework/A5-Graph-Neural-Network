@@ -1,6 +1,6 @@
-# DL-AIT Assignment 5 | Graph Neural Networks
+# DL-AIT Assignment 5 | Student: Dechathon Niamsa-ard [st126235]
 
-**Student: Dechathon Niamsa-ard [st126235]**
+**Graph Neural Networks**
 
 Graph Neural Networks implemented **from scratch** (no PyTorch Geometric) on **MovieLens-100k**:
 GCN, GAT, GraphSAGE, an MLP baseline, and LightGCN. All four assignment exercises are completed in
