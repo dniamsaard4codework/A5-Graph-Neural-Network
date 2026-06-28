@@ -1,24 +1,20 @@
-# DL-AIT Assignment 5 | Student: Dechathon Niamsa-ard [st126235]
+# A5 — Graph Neural Networks: GCN · GAT · GraphSAGE · LightGCN
 
-**Graph Neural Networks**
+**DL-AIT Assignment 5 | Student: Dechathon Niamsa-ard [st126235]**
 
-Graph Neural Networks implemented **from scratch** (no PyTorch Geometric) on **MovieLens-100k**:
-GCN, GAT, GraphSAGE, an MLP baseline, and LightGCN. All four assignment exercises are completed in
-[`A5-Graph-Neural-Networks.ipynb`](A5-Graph-Neural-Networks.ipynb) with every cell executed and
-output visible.
+Graph neural networks implemented from scratch (no PyTorch Geometric) on **MovieLens-100k** and
+evaluated against the four assignment exercises:
 
-- **Tasks:** predict each movie's primary genre (node classification, 19 classes) and recommend
-  movies (link prediction).
-- **Graph:** 1,682 movie nodes; each movie is linked to its **8 most similar movies** by cosine
-  similarity of their rating vectors — a sparse, popularity-normalized co-rating graph
-  (avg degree ~13, edge homophily 0.37).
-- **Node features (non-leaking):** release year, average rating, and log #ratings. The genre
-  one-hot flags are **deliberately excluded** — since the label is `argmax(genre flags)`, using them
-  as features would leak the answer (a plain MLP would then score ~97%) and make "does the graph
-  help?" meaningless.
-- **Hardware:** trained on GPU (NVIDIA RTX 5060 Ti, Blackwell `sm_120`) with PyTorch `cu128`.
-- **Training:** every training run prints a per-epoch training log (train/val loss + accuracy) and a
-  train/val loss curve — embedded in the notebook and shown per exercise below.
+- **GCN** (variable depth, 1–5 layers) on the movie co-rating graph — genre node classification and a deliberate over-smoothing depth study (Exercise 1).
+- **GAT** (8 heads, tuned) on the same graph — attention-weighted aggregation, with per-edge attention visualized against genre (Exercise 2).
+- **GraphSAGE** (k=10 neighbor sampling) — inductive aggregation, benchmarked against a graph-blind **MLP** baseline (Exercises 2–3).
+- **LightGCN** (no `W`, layer-averaged) on the user–movie bipartite graph — recommendation (AUC / Recall@10) vs a `W`-bearing **RecGCN** (Exercise 4).
+
+Every training run prints a per-epoch training log and a train/val loss curve (shown per exercise below).
+Model code and all training live in the notebook [`A5-Graph-Neural-Networks.ipynb`](A5-Graph-Neural-Networks.ipynb).
+All training was run on an **NVIDIA RTX 5060 Ti (16 GB, Blackwell sm_120)** with PyTorch `2.11.0+cu128`.
+
+---
 
 ## Reproduce (uv + GPU)
 
@@ -32,6 +28,20 @@ uv run jupyter nbconvert --to notebook --execute --inplace \
 The MovieLens-100k dataset is downloaded automatically on first run. A fixed seed (42) is set before
 every training run. The RTX 50-series (Blackwell, `sm_120`) requires CUDA 12.8+ wheels, configured via
 the `pytorch-cu128` index in [`pyproject.toml`](pyproject.toml).
+
+---
+
+## Data & graph design
+
+- **Graph:** 1,682 movie nodes; each movie is linked to its **8 most similar movies** by cosine
+  similarity of their rating vectors — a sparse, popularity-normalized co-rating graph
+  (avg degree ~13, edge homophily 0.37).
+- **Node features (non-leaking):** release year, average rating, and log #ratings. The genre
+  one-hot flags are **deliberately excluded** — since the label is `argmax(genre flags)`, using them
+  as features would leak the answer (a plain MLP would otherwise score ~97% by reading the label
+  straight out of its inputs), making the "does the graph help?" comparison meaningful.
+- **Task:** predict each movie's primary genre (19-class node classification) and recommend movies
+  (link prediction on the user–movie bipartite graph).
 
 ---
 
