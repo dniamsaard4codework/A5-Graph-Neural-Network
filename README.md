@@ -17,6 +17,8 @@ output visible.
   as features would leak the answer (a plain MLP would then score ~97%) and make "does the graph
   help?" meaningless.
 - **Hardware:** trained on GPU (NVIDIA RTX 5060 Ti, Blackwell `sm_120`) with PyTorch `cu128`.
+- **Training:** every training run prints a per-epoch training log (train/val loss + accuracy) and a
+  train/val loss curve — embedded in the notebook and shown per exercise below.
 
 ## Reproduce (uv + GPU)
 
@@ -47,6 +49,10 @@ the `pytorch-cu128` index in [`pyproject.toml`](pyproject.toml).
 
 ![Over-smoothing plot](figures/oversmoothing.png)
 
+Per-depth training curves (validation loss/accuracy over epochs — the per-epoch training log is printed in the notebook):
+
+![Exercise 1 training curves](figures/ex1_training_curves.png)
+
 Accuracy peaks at shallow depth and drops noticeably around **depth 3**, while the average
 pairwise cosine similarity of the propagated test features (`Â^k X`) climbs **monotonically** with
 depth. Each GCN layer applies the low-pass operator `D^-1/2 (A+I) D^-1/2`; stacking `k` layers applies
@@ -57,9 +63,13 @@ embedding toward the same vector (**over-smoothing**) until the classifier can n
 
 | Model | Test Accuracy | Avg epoch time |
 |---|---|---|
-| GCN | 23.00% | 1.2 ms |
-| GAT (8 heads) | 26.20% | 43.0 ms |
-| GraphSAGE (k=10) | 21.40% | 393.4 ms |
+| GCN | 23.00% | 1.4 ms |
+| GAT (8 heads) | 26.20% | 41.8 ms |
+| GraphSAGE (k=10) | 18.60% | 394.8 ms |
+
+Training curves for the three GNNs (train solid, validation dashed):
+
+![GNN training curves](figures/training_curves.png)
 
 ![t-SNE embeddings](figures/tsne_embeddings.png)
 
@@ -85,7 +95,11 @@ artifact, not a property of the algorithm.)*
 | MLP (no graph) | 14.40% |
 | GCN | 23.00% |
 | GAT | 26.20% |
-| GraphSAGE | 21.40% |
+| GraphSAGE | 18.60% |
+
+Validation curves — every graph-aware model sits clearly above the graph-blind MLP:
+
+![MLP vs GNN validation curves](figures/ex3_comparison.png)
 
 Given the **same** non-leaking features, adding the graph lifts accuracy from the graph-blind MLP to
 the GNNs by **up to +11.8 percentage points (best: GAT 26.2% vs MLP 14.4%)**. Both sit near the hard 19-way majority baseline (30.8%,
@@ -102,6 +116,10 @@ leakage, not learning - which is why we exclude them.)
 |---|---|---|---|
 | RecGCN (with W) | 80,544 | 0.8458 | 0.0608 |
 | LightGCN (no W) | 76,448 | 0.8696 | 0.0662 |
+
+Recommendation training loss (train solid, validation dashed):
+
+![Recommendation training loss](figures/ex4_loss.png)
 
 ![LightGCN depth](figures/lightgcn_depth.png)
 
@@ -132,7 +150,7 @@ movie's feature vector.
 ## Repository contents
 
 - [`A5-Graph-Neural-Networks.ipynb`](A5-Graph-Neural-Networks.ipynb) - completed notebook, all cells executed.
-- [`figures/`](figures/) - over-smoothing, t-SNE, attention, and LightGCN-depth plots.
+- [`figures/`](figures/) - training/loss curves, over-smoothing, t-SNE, attention, and LightGCN-depth plots.
 - [`pyproject.toml`](pyproject.toml) + `uv.lock` - reproducible environment (PyTorch cu128 / GPU).
 - [`lab_note/`](lab_note/) - class teaching material the implementations build on.
 
